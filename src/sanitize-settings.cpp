@@ -3,6 +3,7 @@
 #include "utils.h"
 #include "debug.h"
 
+#include <set>
 #include <fstream>
 #include <algorithm>
 
@@ -215,15 +216,16 @@ bool TorrentSanitize::basicUrlCleaner(const std::string &url, AnnounceUrl &annur
 }
 
 std::vector<AnnounceUrl> TorrentSanitize::filterUrl(const std::string &url) const {
-	std::vector<AnnounceUrl> urls, queue;
+	std::vector<AnnounceUrl> queue;
+	std::set<AnnounceUrl> urls;
 	AnnounceUrl annurl;
 
-	if (!basicUrlCleaner(url, annurl)) return urls;
+	if (!basicUrlCleaner(url, annurl)) return queue;
 
 	if (filter_url_whitelist.matches(annurl.url)) {
-		urls.push_back(annurl);
+		queue.push_back(annurl);
 		torrent::debug() << "whitelisted entry: " << annurl.url << "\n";
-		return urls;
+		return queue;
 	} else {
 		torrent::debug() << "processing entry: " << annurl.url << "\n";
 		queue.push_back(annurl);
@@ -244,7 +246,7 @@ std::vector<AnnounceUrl> TorrentSanitize::filterUrl(const std::string &url) cons
 
 					if (filter_url_whitelist.matches(annurl.url)) {
 						torrent::debug() << "whitelisted entry: " << annurl.url << "\n";
-						urls.push_back(annurl);
+						urls.insert(annurl);
 					} else {
 						torrent::debug() << "processing entry: " << annurl.url << "\n";
 						queue.push_back(annurl);
@@ -259,11 +261,11 @@ std::vector<AnnounceUrl> TorrentSanitize::filterUrl(const std::string &url) cons
 			torrent::debug() << "blacklisted entry: " << queue[k].url << "\n";
 		} else {
 			torrent::debug() << "passed entry: " << queue[k].url << "\n";
-			urls.push_back(queue[k]);
+			urls.insert(queue[k]);
 		}
 	}
 
-	return urls;
+	return std::vector<AnnounceUrl>(urls.begin(), urls.end());
 }
 
 static std::vector<std::string> splitLine(const std::string &line) {

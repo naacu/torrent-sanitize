@@ -18,6 +18,16 @@ class AnnounceUrl {
 public:
 	std::string url;
 	std::string domain; /* domain + tld, like "example.com" for "udp://tracker.example.com/". full address for ipv4/ipv6 */
+
+
+	bool operator <(const AnnounceUrl &other) const {
+		return (url < other.url);
+		// if the urls are equal, the domains are too
+	}
+
+	bool operator ==(const AnnounceUrl &other) const {
+		return url == other.url;
+	}
 };
 
 class TorrentSanitize {
