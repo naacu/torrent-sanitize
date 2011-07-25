@@ -42,7 +42,7 @@ public:
 
 	void clear();
 
-	bool load(const char *pattern);
+	bool load(const std::string &pattern);
 
 	bool matches(BufferString str) const;
 	bool matches(const std::string &str) const;

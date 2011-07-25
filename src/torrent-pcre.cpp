@@ -156,13 +156,13 @@ void PCRE::clear() {
 	m_re = 0;
 }
 
-bool PCRE::load(const char *pattern) {
+bool PCRE::load(const std::string &pattern) {
 	const char* compile_error;
 	int eoffset, errorcodeptr;
 
 	clear();
 
-	m_re = pcre_compile2(pattern, 0, &errorcodeptr, &compile_error, &eoffset, NULL);
+	m_re = pcre_compile2(("^(?:" + pattern + ")\\z").c_str(), 0, &errorcodeptr, &compile_error, &eoffset, NULL);
 	if (0 == m_re) {
 		std::cerr << "Couldn't parse pcre pattern: " << compile_error << "\n";
 		return false;
