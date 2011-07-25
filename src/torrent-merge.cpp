@@ -9,6 +9,8 @@ extern "C" {
 
 void syntax() {
 	std::cerr << "Syntax: torrent-merge [-d] [-f url-filter ] destination.torrent [source.torrents...]\n"
+		"\tMerges announce urls from source torrents to dest torrent.\n"
+		"\tApplies a filter which can be configured with a file.\n"
 		"\n"
 		"\t\t-d: debug\n";
 	exit(100);

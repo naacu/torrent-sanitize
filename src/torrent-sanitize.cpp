@@ -170,7 +170,7 @@ int main(int argc, char **argv) {
 		if (opt_info_hash) std::cout << t.infohash() << std::endl;
 		t.sanitize_announce_urls(san);
 		if (2 == filenames) writeAtomicFile(std::string(argv[optind+1]), t);
-		if (opt_show_info) t.print_details();
+		if (opt_show_info > 0) t.print_details();
 	} else if (opt_show_info) {
 		/* show info */;
 		if (1 != filenames) syntax();
