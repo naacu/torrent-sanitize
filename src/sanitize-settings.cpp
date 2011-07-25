@@ -224,12 +224,9 @@ std::vector<AnnounceUrl> TorrentSanitize::filterUrl(const std::string &url) cons
 		urls.push_back(annurl);
 		torrent::debug() << "whitelisted entry: " << annurl.url << "\n";
 		return urls;
-	} else if (!filter_url_blacklist.matches(annurl.url)) {
+	} else {
 		torrent::debug() << "processing entry: " << annurl.url << "\n";
 		queue.push_back(annurl);
-	} else {
-		torrent::debug() << "blaclisted entry: " << annurl.url << "\n";
-		return urls;
 	}
 
 	std::vector<std::string> rewrites;
@@ -248,12 +245,9 @@ std::vector<AnnounceUrl> TorrentSanitize::filterUrl(const std::string &url) cons
 					if (filter_url_whitelist.matches(annurl.url)) {
 						torrent::debug() << "whitelisted entry: " << annurl.url << "\n";
 						urls.push_back(annurl);
-					} else if (!filter_url_blacklist.matches(annurl.url)) {
+					} else {
 						torrent::debug() << "processing entry: " << annurl.url << "\n";
 						queue.push_back(annurl);
-					} else {
-						torrent::debug() << "whitelisted entry: " << annurl.url << "\n";
-						continue;
 					}
 				}
 			}
@@ -261,9 +255,13 @@ std::vector<AnnounceUrl> TorrentSanitize::filterUrl(const std::string &url) cons
 	}
 
 	for (int k = 0; k < queue.size(); k++) {
-		torrent::debug() << "passed entry: " << queue[k].url << "\n";
+		if (filter_url_blacklist.matches(queue[k].url)) {
+			torrent::debug() << "blacklisted entry: " << queue[k].url << "\n";
+		} else {
+			torrent::debug() << "passed entry: " << queue[k].url << "\n";
+			urls.push_back(queue[k]);
+		}
 	}
-	urls.insert(urls.end(), queue.begin(), queue.end());
 
 	return urls;
 }
