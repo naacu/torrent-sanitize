@@ -21,10 +21,9 @@
 # each url is first checked for
 #  * generic syntax: invalid -> remove url
 #  * whitelist: hit -> accept and stop processing (no further rewrites)
-#  * blacklist: hit -> remove url
 # rewrite results are checked for the same. rewrite results are only rewritten with
 #  later rules => no loops.
-
+# after all rewrites have been applied the urls are filtered through the blacklist.
 
 # add these tracker always:
 + udp://tracker.openbittorrent.com:80
@@ -72,28 +71,12 @@
 (.*)/annonce(.*)    \1/announce\2
 
 
-.*[./]istole\.it(?:[:/].*)?                     udp://tracker.istole.it:80
-.+sladinki007\.net.+                            udp://tracker.istole.it:80
-.+eztv\..+                                      udp://tracker.istole.it:80
+.*[./](?:istole\.it|sladinki007\.net|eztv\..+)(?:[:/].*)?      udp://tracker.istole.it:80
+.*[./](?:openbittorrent\.com|11\.rarbg\.com|bt\.rghost\.net|tk\.btcomic\.net)(?:[:/].*)?      udp://tracker.openbittorrent.com:80
+.*[./](?:publicbt\.com|10\.rarbg\.com|harry\.lu|pow7\.com|csze\.com|ilibr\.org|irc\.su|jamendo\.com|prq\.to|publicbits\.com|token\.ro)(?:[:/].*)?    udp://tracker.publicbt.com:80
 .+denis\.stalker\.h3q\.com.+                    udp://tracker.ccc.de:80
 (.+)\.demonoid\.com([:/].*)?                    \1.demonoid.me\2
-.*[./]openbittorrent\.com(?:[:/].*)?            udp://tracker.openbittorrent.com:80
-.+11\.rarbg\.com.+                              udp://tracker.openbittorrent.com:80
-.+bt\.rghost\.net.+                             udp://tracker.openbittorrent.com:80
-.+tk\.btcomic\.net.+                            udp://tracker.openbittorrent.com:80
-.*[./]publicbt\.com(?:[:/].*)?                  udp://tracker.publicbt.com:80
-.+10\.rarbg\.com.+                              udp://tracker.publicbt.com:80
-.+ipv4\.tracker\.harry\.lu.+                    udp://tracker.publicbt.com:80
-.+pow7\.com.+                                   udp://tracker.publicbt.com:80
-.+tracker\.csze\.com.+                          udp://tracker.publicbt.com:80
-.+tracker\.ilibr\.org.+                         udp://tracker.publicbt.com:80
-.+tracker\.irc\.su.+                            udp://tracker.publicbt.com:80
-.+tracker\.jamendo\.com.+                       udp://tracker.publicbt.com:80
-.+tracker\.prq\.to.+                            udp://tracker.publicbt.com:80
-.+tracker\.publicbits\.com.+                    udp://tracker.publicbt.com:80
-.+tracker\.token\.ro.+                          udp://tracker.publicbt.com:80
-(.+)tracker1\.torrentbox\.com([:/].*)?          \1tracker.torrentbox.com\2
-(.+)tracker2\.torrentbox\.com([:/].*)?          \1tracker.torrentbox.com\2
+([^:]+):.*[./]torrentbox\.com([:/].*)?          \1://tracker.torrentbox.com\2
 http:.*[./]hexagon.cc([:/].*)?                  http://tracker.hexagon.cc:2710/announce
 
 
@@ -107,7 +90,6 @@ http:.*[./]hexagon.cc([:/].*)?                  http://tracker.hexagon.cc:2710/a
 
 # no TPB
 -- (the)?piratebay\..*
--- prq\.to     # this will hit before the above replacment, check: http://tracker.prq.to./announce
 
 # Manual
 -- moviex\.info                        # Abusive tracker
