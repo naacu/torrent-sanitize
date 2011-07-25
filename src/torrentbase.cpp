@@ -279,7 +279,7 @@ bool TorrentBase::skip_dict() {
 	return true;
 }
 
-/* skip entries until found search or dict end */
+/* skip entries until found search or dict end. skipped does not include the found key */
 bool TorrentBase::try_next_dict_entry(BufferString search, BufferString prev, bool &error, BufferString *skipped) {
 	size_t start = m_buffer.pos();
 	error = true;
@@ -293,7 +293,7 @@ bool TorrentBase::try_next_dict_entry(BufferString search, BufferString prev, bo
 		if (cur <= prev) return seterror("(previous) dict entries in wrong order");
 		if (cur == search) {
 			error = false;
-			if (0 != skipped) *skipped = BufferString(m_buffer.data() + start, m_buffer.pos() - start);
+			if (0 != skipped) *skipped = BufferString(m_buffer.data() + start, curpos - start);
 			return true;
 		}
 		if (cur > search) {
@@ -314,7 +314,7 @@ bool TorrentBase::try_next_dict_entry(BufferString search, BufferString prev, bo
 	return false;
 }
 
-/* skip entries until found search or dict end */
+/* skip entries until dict end */
 bool TorrentBase::goto_dict_end(BufferString prev, BufferString *skipped) {
 	size_t start = m_buffer.pos();
 	if (m_buffer.pos() >= m_buffer.m_len) return seterror("expected dict entry or 'e', found eof");

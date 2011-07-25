@@ -72,10 +72,10 @@ protected:
 
 	bool skip_dict();
 
-	/* skip entries until found search or dict end */
+	/* skip entries until found search or dict end. skipped does not include the found key */
 	bool try_next_dict_entry(BufferString search, BufferString prev, bool &error, BufferString *skipped = 0);
 
-	/* skip entries until found search or dict end */
+	/* skip entries until dict end */
 	bool goto_dict_end(BufferString prev, BufferString *skipped = 0);
 
 	bool skip_value();
