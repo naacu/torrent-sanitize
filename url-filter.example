@@ -56,6 +56,9 @@
 
 # no dyndns
 -- dyndns.*
+
+# no nyud.net
+-- nyud.net
 # ---------- /Policy blacklisting ---------------
 
 
@@ -73,10 +76,10 @@
 
 .*[./](?:istole\.it|sladinki007\.net|eztv\..+)(?:[:/].*)?      udp://tracker.istole.it:80
 .*[./](?:openbittorrent\.com|11\.rarbg\.com|bt\.rghost\.net|tk\.btcomic\.net)(?:[:/].*)?      udp://tracker.openbittorrent.com:80
-.*[./](?:publicbt\.com|10\.rarbg\.com|harry\.lu|pow7\.com|csze\.com|ilibr\.org|irc\.su|jamendo\.com|prq\.to|publicbits\.com|token\.ro)(?:[:/].*)?    udp://tracker.publicbt.com:80
+.*[./](?:publicbt\.com|10\.rarbg\.com|harry\.lu(?:\..*)?|pow7\.com|csze\.com|ilibr\.org|irc\.su|jamendo\.com|prq\.to|publicbits\.com|token\.ro)(?:[:/].*)?    udp://tracker.publicbt.com:80
 .+denis\.stalker\.h3q\.com.+                    udp://tracker.ccc.de:80
 (.+)\.demonoid\.com([:/].*)?                    \1.demonoid.me\2
-([^:]+):.*[./]torrentbox\.com([:/].*)?          \1://tracker.torrentbox.com\2
+([^:]+):.*[./]torrentbox\.com(?:[:/].*)?        udp://tracker.torrentbox.com:2710 \1://tracker.torrentbox.com:2710/announce
 http:.*[./]hexagon.cc([:/].*)?                  http://tracker.hexagon.cc:2710/announce
 
 
