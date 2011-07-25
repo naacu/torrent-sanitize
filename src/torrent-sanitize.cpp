@@ -50,8 +50,17 @@ void syntax() {
 		"\tprint info (default command):\n"
 		"\t\ttorrent-sanitize -i  [-f] [-d] [-v] file.torrent\n"
 		"\n"
+		"\t\t  Hint: regular matches always do full matching like ^...$\n"
+		"\t\t--meta-filter-text regex      allow matching keys for text entries (example: 'comment|created by', default: '.*')\n"
+		"\t\t--meta-filter-number regex    allow matching keys for numeric entries (example: 'creation date', default: '.*')\n"
+		"\t\t--meta-filter-any regex       allow matching keys for any entries (default: '', none)\n"
+		"\t\t--meta-add-string key=value   add meta string entry\n"
+		"\t\t--meta-add-raw key=value      add meta raw (bencoded) entry\n"
+		"\n"
+		"\t\t--url-filter configfile       use configfile for announce url filtering\n"
+		"\n"
 		"\tsanitize:\n"
-		"\t\ttorrent-sanitize -s [-h] [-d] [-v] infile.torrent outfile.torrent\n"
+		"\t\ttorrent-sanitize -s [-h] [-d] [-v] infile.torrent [outfile.torrent]\n"
 		"\n"
 		"\tcalculate info hash / show announce urls:\n"
 		"\t\ttorrent-sanitize [-h] [-u] file.torrent\n"
@@ -59,14 +68,7 @@ void syntax() {
 		"\t\t -h: show info hash\n"
 		"\t\t -f: show files\n"
 		"\t\t -d: debug mode\n"
-		"\t\t -v: verify strict: utf-8 checks (more may come)\n"
-		"\n"
-		"\t\t  Hint: regular matches always do full matching like ^...$\n"
-		"\t\t--meta-filter-text regex      allow matching keys for text entries (example: 'comment|created by', default: '.*')\n"
-		"\t\t--meta-filter-number regex    allow matching keys for numeric entries (example: 'creation date', default: '.*')\n"
-		"\t\t--meta-filter-any regex       allow matching keys for any entries (default: '', none)\n"
-		"\t\t--meta-add-string key=value   add meta string entry\n"
-		"\t\t--meta-add-raw key=value      add meta raw (bencoded) entry\n";
+		"\t\t -v: verify strict: utf-8 checks (more may come)\n";
 	exit(100);
 }
 
@@ -88,7 +90,8 @@ int main(int argc, char **argv) {
 		{ "meta-filter-number", 1, 0, 1 },
 		{ "meta-filter-any", 1, 0, 2 },
 		{ "meta-add-string", 1, 0, 3 },
-		{ "meta-add-raw", 1, 0, 4 }
+		{ "meta-add-raw", 1, 0, 4 },
+		{ "url-filter", 1, 0, 5}
 	};
 
 	/* only used for sanitize/info */
@@ -103,13 +106,13 @@ int main(int argc, char **argv) {
 	while (-1 != (c = getopt_long(argc, argv, "ifdvshu", longopts, NULL))) {
 		switch (c) {
 		case 0:
-			san.filter_meta_text.load(optarg);
+			if (!san.filter_meta_text.load(optarg)) return 2;
 			break;
 		case 1:
-			san.filter_meta_num.load(optarg);
+			if (!san.filter_meta_num.load(optarg)) return 2;
 			break;
 		case 2:
-			san.filter_meta_other.load(optarg);
+			if (!san.filter_meta_other.load(optarg)) return 2;
 			break;
 		case 3:
 			keyvaluesplit(optarg, key, value);
@@ -118,6 +121,9 @@ int main(int argc, char **argv) {
 		case 4:
 			keyvaluesplit(optarg, key, value);
 			san.add_new_raw_meta_entry(key, value);
+			break;
+		case 5:
+			if (!san.loadUrlConfig(std::string(optarg))) return 2;
 			break;
 		case 'i':
 			opt_show_info = 1;
@@ -152,7 +158,7 @@ int main(int argc, char **argv) {
 	int filenames = argc - optind;
 
 	if (opt_sanitize) {
-		if (2 != filenames) syntax();
+		if (1 != filenames && 2 != filenames) syntax();
 
 		san.show_paths = false;
 
@@ -163,7 +169,8 @@ int main(int argc, char **argv) {
 		}
 		if (opt_info_hash) std::cout << t.infohash() << std::endl;
 		t.sanitize_announce_urls(san);
-		writeAtomicFile(std::string(argv[optind+1]), t);
+		if (2 == filenames) writeAtomicFile(std::string(argv[optind+1]), t);
+		if (opt_show_info) t.print_details();
 	} else if (opt_show_info) {
 		/* show info */;
 		if (1 != filenames) syntax();
