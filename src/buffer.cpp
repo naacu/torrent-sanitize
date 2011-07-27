@@ -116,6 +116,10 @@ bool BufferString::validUTF8() {
 	return torrent::validUTF8(m_data, m_len);
 }
 
+bool BufferString::validUTF8Text() {
+	return torrent::validUTF8Text(m_data, m_len);
+}
+
 bool operator<(const BufferString &a, const BufferString &b) {
 	int i = memcmp(a.m_data, b.m_data, std::min(a.m_len, b.m_len));
 	if (i < 0) return true;

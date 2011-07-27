@@ -133,14 +133,14 @@ bool TorrentBase::skip_string() {
 bool TorrentBase::read_utf8(BufferString &str) {
 	size_t pos = m_buffer.pos();
 	if (!read_string(str)) return false;
-	if (!str.validUTF8()) { m_buffer.m_pos = pos; return seterror("string not valid utf-8"); }
+	if (!str.validUTF8Text()) { m_buffer.m_pos = pos; return seterror("string not valid utf-8"); }
 	return true;
 }
 bool TorrentBase::read_utf8(std::string &str) {
 	size_t pos = m_buffer.pos();
 	BufferString tmp;
 	if (!read_string(tmp)) return false;
-	if (!tmp.validUTF8()) { m_buffer.m_pos = pos; return seterror("string not valid utf-8"); }
+	if (!tmp.validUTF8Text()) { m_buffer.m_pos = pos; return seterror("string not valid utf-8"); }
 	str = tmp.toString();
 	return true;
 }

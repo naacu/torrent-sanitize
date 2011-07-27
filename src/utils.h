@@ -13,6 +13,10 @@ namespace torrent {
 bool validUTF8(const char *_s, size_t len);
 bool validUTF8(const std::string &s);
 
+/* forbid ctrl characters, only allow \n \r \t */
+bool validUTF8Text(const char *_s, size_t len);
+bool validUTF8Text(const std::string &s);
+
 template<size_t N> bool stringHasPrefix(const std::string &s, const char (&prefix)[N]) {
 	return s.length() >= (N-1) && 0 == memcmp(s.c_str(), prefix, N-1);
 }

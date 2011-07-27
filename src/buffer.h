@@ -80,6 +80,7 @@ public:
 	std::string sha1();
 
 	bool validUTF8();
+	bool validUTF8Text();
 
 	size_t length() const { return m_len; }
 	const char* data() const { return m_data; }
