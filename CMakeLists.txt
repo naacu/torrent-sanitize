@@ -28,6 +28,6 @@ ADD_EXECUTABLE(torrent-test-filter
 	src/torrent-test-filter.cpp
 )
 
-TARGET_LINK_LIBRARIES(torrent-merge Base pcrecpp ssl)
-TARGET_LINK_LIBRARIES(torrent-sanitize Base pcrecpp ssl)
-TARGET_LINK_LIBRARIES(torrent-test-filter Base pcrecpp ssl)
+TARGET_LINK_LIBRARIES(torrent-merge Base pcrecpp ssl crypto)
+TARGET_LINK_LIBRARIES(torrent-sanitize Base pcrecpp ssl crypto)
+TARGET_LINK_LIBRARIES(torrent-test-filter Base pcrecpp ssl crypto)
